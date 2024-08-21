@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.ui.Model;
 
 import com.sim.model.UserDetails;
 import com.sim.service.UserService;
@@ -24,24 +25,34 @@ public class HomeController {
 		return "index";
 	}
 	
-	@GetMapping("/login")
+	@GetMapping("/signin")
 	public String login()
 	{
 		return "login";
 	}
 	
+//	@GetMapping("/register")
+//	public String register()
+//	{
+//		return "register";
+//	}
+	
 	@GetMapping("/register")
-	public String register()
-	{
-		return "register";
-	}
+    public String register(Model model, HttpSession session) {
+        Object msg = session.getAttribute("msg");
+        if (msg != null) {
+            model.addAttribute("msg", msg);
+            session.removeAttribute("msg");  // Remove the message after adding it to the model
+        }
+        return "register";
+    }
 	
 	@PostMapping("/createUser")
 	public String createuser(@ModelAttribute UserDetails user, HttpSession session)
 	{
 //		System.out.println(user);
 		
-		boolean f=userService.checkEmail(user.getEmail());
+		boolean f = userService.checkEmail(user.getEmail());
 		
 		if(f)
 		{
