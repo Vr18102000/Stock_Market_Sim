@@ -1,11 +1,11 @@
 package com.sim.service;
 
-import com.sim.model.UserDetails;
+import com.sim.model.UserDtls;
 
 public interface UserService {
 	
 	
-	public UserDetails createUser(UserDetails user);
+	public UserDtls createUser(UserDtls user);
 	
 	public boolean checkEmail(String email);
 }

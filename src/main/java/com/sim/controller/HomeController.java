@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 
-import com.sim.model.UserDetails;
+import com.sim.model.UserDtls;
 import com.sim.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -48,7 +48,7 @@ public class HomeController {
     }
 	
 	@PostMapping("/createUser")
-	public String createuser(@ModelAttribute UserDetails user, HttpSession session)
+	public String createuser(@ModelAttribute UserDtls user, HttpSession session)
 	{
 //		System.out.println(user);
 		
@@ -60,8 +60,8 @@ public class HomeController {
 		} 
 		else 
 		{
-			UserDetails userDetails = userService.createUser(user);
-			if(userDetails!=null)
+			UserDtls userDtls = userService.createUser(user);
+			if(userDtls!=null)
 			{
 				session.setAttribute("msg", "Register Successfully");
 			} else {
