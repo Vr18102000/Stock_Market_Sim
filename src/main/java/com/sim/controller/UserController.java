@@ -13,7 +13,7 @@ import com.sim.model.UserDtls;
 import com.sim.repository.UserRepository;
 
 @Controller
-@RequestMapping("/user/")
+@RequestMapping("/user")
 public class UserController {
 
 	@Autowired
