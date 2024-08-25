@@ -21,9 +21,13 @@ public class UserDtls {
 	
 	private String address;
 	
-	private String qualification;
+	private String mobileNumber;
 	
 	private String password;
 	
 	private String role;
+	
+	private boolean accountNonLocked;
+	
+	private boolean enabled;
 }
