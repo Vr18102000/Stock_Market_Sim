@@ -41,22 +41,22 @@ public class UserController {
 		return "user/home";
 	}
 	
+//	@GetMapping("/changePass")
+//	public String loadChangePassword()		
+//	{
+//		return "user/change_password";
+//	}
+	
 	@GetMapping("/changePass")
-	public String loadChangePassword()		
-	{
-		return "user/change_password";
+    public String register(Model model, HttpSession session) {
+        Object msg = session.getAttribute("msg");
+        if (msg != null) {
+            model.addAttribute("msg", msg);
+            session.removeAttribute("msg");  // Remove the message after adding it to the model
+        }
+        return "user/change_password";
 	}
 	
-//	@GetMapping("/changePass")
-//    public String register(Model model, HttpSession session) {
-//        Object msg = session.getAttribute("msg");
-//        if (msg != null) {
-//            model.addAttribute("msg", msg);
-//            session.removeAttribute("msg");  // Remove the message after adding it to the model
-//        }
-//        return "user/change_password";
-//	}
-//	
 	@PostMapping("/updatePassword")
 	public String changePassword(Principal p, @RequestParam("oldPass") String oldPass, @RequestParam("newPass") String newPass, HttpSession session)
 	{
