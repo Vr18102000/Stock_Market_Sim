@@ -30,4 +30,6 @@ public class UserDtls {
 	private boolean accountNonLocked;
 	
 	private boolean enabled;
+	
+	private String verificationCode;
 }

@@ -12,4 +12,5 @@ public interface UserRepository extends JpaRepository<UserDtls, Integer>{
 
 	public UserDtls findByEmailAndMobileNumber(String email, String mobileNumber);
 	
+	public UserDtls findByVerificationCode(String code);
 }

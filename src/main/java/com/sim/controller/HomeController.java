@@ -3,6 +3,7 @@ package com.sim.controller;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import com.sim.model.UserDtls;
 import com.sim.repository.UserRepository;
 import com.sim.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -64,9 +66,12 @@ public class HomeController {
     }
 	
 	@PostMapping("/createUser")
-	public String createuser(@ModelAttribute UserDtls user, HttpSession session)
+	public String createuser(@ModelAttribute UserDtls user, HttpSession session, HttpServletRequest request)
 	{
-//		System.out.println(user);
+		
+		String url = request.getRequestURL().toString();
+		// http://localhost:8080/createUser
+		url = url.replace(request.getServletPath(), "");
 		
 		boolean f = userService.checkEmail(user.getEmail());
 		
@@ -76,7 +81,7 @@ public class HomeController {
 		} 
 		else 
 		{
-			UserDtls userDtls = userService.createUser(user);
+			UserDtls userDtls = userService.createUser(user, url);
 			if(userDtls!=null)
 			{
 				session.setAttribute("msg", "Register Successfully");
@@ -87,6 +92,18 @@ public class HomeController {
 		
 		
 		return "redirect:/register";
+	}
+	
+	@GetMapping("/verify")
+	public String verifyAccount(@Param("code") String code)
+	{
+		if(userService.verifyAccount(code))
+		{
+			return "verif_success";
+		} else {
+			return "verif_failed";
+		}
+
 	}
 	
 	@GetMapping("/loadForgotPassword")
