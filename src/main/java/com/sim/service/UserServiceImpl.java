@@ -5,11 +5,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.sim.model.UserDtls;
 import com.sim.repository.UserRepository;
 
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpSession;
 import net.bytebuddy.utility.RandomString;
 
 @Service
@@ -95,4 +98,16 @@ public class UserServiceImpl implements UserService{
 		
 		return false;
 	}
+
+	@Override
+	public void removeSessionMessage() {
+		
+		HttpSession session = ((ServletRequestAttributes)(RequestContextHolder.getRequestAttributes())).getRequest()
+								.getSession();
+		
+		session.removeAttribute("msg");
+		
+	}
+	
+	
 }

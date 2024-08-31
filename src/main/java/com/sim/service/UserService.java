@@ -10,4 +10,6 @@ public interface UserService {
 	public boolean checkEmail(String email);
 	
 	public boolean verifyAccount(String code);
+	
+	public void removeSessionMessage();
 }
