@@ -1,1 +1,49 @@
 @charset "UTF-8";
+
+html, body {
+	height: 100%;
+    margin: 0;
+    padding:0;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+	flex-shrink: 0; /* Ensure the navbar doesn't shrink */
+}
+        
+.custom-container {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #e0e5ec, #f5f7fa);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.custom-container::before {
+    content: '';
+    position: absolute;
+    top:0;
+    bottom:0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(142, 68, 173, 0.6), rgba(52, 152, 219, 0.6), rgba(241, 196, 15, 0.6));
+    background-size: 300% 300%;
+    animation: gradientMove 6s ease infinite;
+    z-index: -1;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.input-group input {
+    background: #e0e0e0;
+    color: #333;
+}
