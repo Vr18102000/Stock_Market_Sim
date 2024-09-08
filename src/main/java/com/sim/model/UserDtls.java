@@ -1,6 +1,8 @@
 package com.sim.model;
 
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +30,10 @@ public class UserDtls {
 	private String role;
 	
 	private boolean accountNonLocked;
+	
+	private int failedAttempt;
+	
+	private Date lockTime;
 	
 	private boolean enabled;
 	

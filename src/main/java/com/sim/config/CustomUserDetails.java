@@ -25,6 +25,15 @@ public class CustomUserDetails implements UserDetails {
 		return Arrays.asList(simpleGrantedAuthority);
 	}
 
+	
+	public UserDtls getUser() {
+		return user;
+	}
+
+	public void setUser(UserDtls user) {
+		this.user = user;
+	}
+
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub

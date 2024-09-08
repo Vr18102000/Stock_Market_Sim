@@ -34,7 +34,7 @@ html, body {
     background: linear-gradient(135deg, rgba(142, 68, 173, 0.6), rgba(52, 152, 219, 0.6), rgba(241, 196, 15, 0.6));
     background-size: 300% 300%;
     animation: gradientMove 6s ease infinite;
-    z-index: -1;
+    /* z-index: -1; */
 }
 
 @keyframes gradientMove {

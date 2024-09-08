@@ -20,6 +20,9 @@ public class SecurityConfig{
 	@Autowired
 	public AuthenticationSuccessHandler customSuccessHandler;
 	
+	@Autowired
+	public CustomFailureHandler failureHandler;
+	
 	@Bean
 	public UserDetailsService getUserDetailsService() {
 		return new UserDetailsServiceImpl();
@@ -45,6 +48,7 @@ public class SecurityConfig{
         http.authorizeHttpRequests(requests -> requests.requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/user/**").hasRole("USER")
                 .requestMatchers("/**").permitAll()).formLogin(login -> login.loginPage("/signin").loginProcessingUrl("/login")
+                .failureHandler(failureHandler)
                 .successHandler(customSuccessHandler)).csrf(csrf -> csrf.disable());
 		
         
