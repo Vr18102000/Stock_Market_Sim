@@ -12,7 +12,7 @@
 		<!-- Start Navbar -->
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		  <div class="container-fluid">
-		    <a class="navbar-brand" href="#">Stock_Sim</a>
+		    <a class="navbar-brand" href="/">Stock_Sim</a>		<!--changed href from # to /  -->
 		    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		      <span class="navbar-toggler-icon"></span>
 		    </button>
@@ -21,13 +21,13 @@
 		      <th:block th:if="${user==NULL}">
 			      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 			      	<li class="nav-item">
-					  	<a class="nav-link active" aria-current="page" href="/">Home</a>
+					  	<a class="nav-link active" aria-current="page" th:href="@{/}">Home</a>
 					 </li>
 			        <li class="nav-item">
-			          <a class="nav-link" href="register">Register</a>
+			          <a class="nav-link" th:href="@{/register}">Register</a>
 			        </li>
 					<li class="nav-item">
-			          <a class="nav-link" href="signin">Login</a>
+			          <a class="nav-link" th:href="@{/signin}">Login</a>
 			        </li>
 			      </ul>
 		      </th:block>
@@ -36,7 +36,8 @@
 		      
 			      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					  <li class="nav-item">
-					  	<a class="nav-link active" aria-current="page" href="/">Home</a>
+					  	<a class="nav-link active" aria-current="page" th:href="@{/user/}">Home</a>
+						<a class="nav-link" th:href="@{/user/trade}">Trade Stocks</a>
 					  </li>
 				  </ul>
 				  
@@ -46,9 +47,9 @@
 			            [[${user.fullName}]]</a>
 			          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 			            <li><a class="dropdown-item" href="#">Edit Profile</a></li>
-			            <li><a class="dropdown-item" href="changePass">Change Password</a></li>
+			            <li><a class="dropdown-item" th:href="@{/user/changePass}">Change Password</a></li>
 			            <li><hr class="dropdown-divider"></li>
-			            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+			            <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
 			          </ul>
 			        </li>
 			        

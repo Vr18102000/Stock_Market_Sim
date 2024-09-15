@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-
 @Configuration
 @EnableWebSecurity
 
@@ -45,16 +44,19 @@ public class SecurityConfig{
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.authorizeHttpRequests(requests -> requests.requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/user/**").hasRole("USER")
-                .requestMatchers("/**").permitAll()).formLogin(login -> login.loginPage("/signin").loginProcessingUrl("/login")
-                .failureHandler(failureHandler)
-                .successHandler(customSuccessHandler)).csrf(csrf -> csrf.disable());
-		
-        
-        http.authenticationProvider(getDaoAuthProvider());  
-        
+		http.authorizeHttpRequests(requests -> requests.requestMatchers("/admin/**").hasRole("ADMIN")
+				.requestMatchers("/user/**").hasRole("USER")
+				.requestMatchers("/**").permitAll())
+				.formLogin(login -> login.loginPage("/signin").loginProcessingUrl("/login")
+				.failureHandler(failureHandler)
+				.successHandler(customSuccessHandler)).csrf(csrf -> csrf.disable());
+
+				http.authenticationProvider(getDaoAuthProvider());
+                 
 		return http.build();
 	}
 
 }
+
+
+

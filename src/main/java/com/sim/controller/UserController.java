@@ -24,6 +24,9 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepo;
 	
+//	@Autowired
+//	private TradingService tradingService;
+	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncode;
 	
@@ -40,12 +43,6 @@ public class UserController {
 	{
 		return "user/home";
 	}
-	
-//	@GetMapping("/changePass")
-//	public String loadChangePassword()		
-//	{
-//		return "user/change_password";
-//	}
 	
 	@GetMapping("/changePass")
     public String register(Model model, HttpSession session) {
@@ -82,5 +79,5 @@ public class UserController {
 		}
 		return "redirect:/user/changePass";
 	}
-	
+
 }
