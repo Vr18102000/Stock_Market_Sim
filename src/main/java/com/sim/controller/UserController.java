@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.sim.model.Portfolio;
 import com.sim.model.Transaction;
 import com.sim.model.UserDtls;
+import com.sim.model.UserLeaderboardDTO;
 import com.sim.repository.PortfolioRepository;
 import com.sim.repository.TransactionRepository;
 import com.sim.repository.UserRepository;
@@ -121,8 +122,6 @@ public class UserController {
 	    return "user/portfolio";  // Return the new portfolio page
 	}
 
-
-
 	@GetMapping("/user/transactions")
 	public String transactionHistory(Model model, Principal principal) {
 	    UserDtls user = userRepo.findByEmail(principal.getName());
@@ -132,6 +131,27 @@ public class UserController {
 	    model.addAttribute("transactions", transactions);
 
 	    return "user/transaction_history";
+	}
+
+	@PostMapping("/sellStock")
+	public String sellStock(@RequestParam String symbol, @RequestParam int quantity, Principal principal, HttpSession session) {
+	    UserDtls user = userRepo.findByEmail(principal.getName());
+
+	    boolean result = tradingService.sellStock(symbol, quantity, user);
+	    if (result) {
+	        session.setAttribute("msg", "Stock sold successfully!");
+	    } else {
+	        session.setAttribute("msg", "Failed to sell stock. Check your portfolio or stock quantity.");
+	    }
+
+	    return "redirect:/user/";  // Redirect back to home or portfolio page
+	}
+	
+	@GetMapping("/leaderboard")
+	public String viewLeaderboard(Model model) {
+	    List<UserLeaderboardDTO> leaderboard = tradingService.getLeaderboard();
+	    model.addAttribute("leaderboard", leaderboard);
+	    return "user/leaderboard";  // Create this HTML page to display the leaderboard
 	}
 
 	

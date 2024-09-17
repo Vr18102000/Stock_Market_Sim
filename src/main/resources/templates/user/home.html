@@ -11,6 +11,12 @@
 		<h1>Email			: [[${user.email}]]</h1>
 		<h1>Mobile Number	: [[${user.mobileNumber}]]</h1>
 		<br><br>
+		<form action="/user/buyStock" method="post">
+		    <input type="text" name="symbol" placeholder="Stock Symbol (e.g., AAPL)">
+		    <input type="number" name="quantity" placeholder="Quantity">
+		    <button type="submit">Buy Stock</button>
+		</form>
+		<br><br>
 		<a href="/user/portfolio" class="btn btn-info">Portfolio</a>
 		<a href="/logout">Logout</a>
 	</section>

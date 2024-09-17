@@ -11,23 +11,31 @@
     <div class="container mt-5">
         <h2>Your Portfolio</h2>
         <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Stock Symbol</th>
-                    <th>Quantity</th>
-                    <th>Current Price</th>
-                    <th>Total Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="portfolio : ${portfolios}">
-                    <td th:text="${portfolio.stock.symbol}"></td>
-                    <td th:text="${portfolio.quantity}"></td>
-                    <td th:text="${portfolio.stock.price}"></td>
-                    <td th:text="${portfolio.quantity * portfolio.stock.price}"></td>
-                </tr>
-            </tbody>
-        </table>
+		    <thead>
+		        <tr>
+		            <th>Stock Symbol</th>
+		            <th>Quantity</th>
+		            <th>Current Price</th>
+		            <th>Total Value</th>
+		            <th>Actions</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		        <tr th:each="portfolio : ${portfolios}">
+		            <td th:text="${portfolio.stock.symbol}"></td>
+		            <td th:text="${portfolio.quantity}"></td>
+		            <td th:text="${portfolio.stock.price}"></td>
+		            <td th:text="${portfolio.quantity * portfolio.stock.price}"></td>
+		            <td>
+		                <form action="/user/sellStock" method="post">
+		                    <input type="hidden" name="symbol" th:value="${portfolio.stock.symbol}">
+		                    <input type="number" name="quantity" placeholder="Quantity" required>
+		                    <button type="submit" class="btn btn-danger">Sell</button>
+		                </form>
+		            </td>
+		        </tr>
+		    </tbody>
+		</table>
 
         <a href="/user/" class="btn btn-primary">Back to Dashboard</a>
     </div>
