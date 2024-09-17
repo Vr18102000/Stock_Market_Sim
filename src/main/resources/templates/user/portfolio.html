@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Stock Market</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<section>
+    <div class="container mt-5">
+        <h2>Your Portfolio</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Stock Symbol</th>
+                    <th>Quantity</th>
+                    <th>Current Price</th>
+                    <th>Total Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="portfolio : ${portfolios}">
+                    <td th:text="${portfolio.stock.symbol}"></td>
+                    <td th:text="${portfolio.quantity}"></td>
+                    <td th:text="${portfolio.stock.price}"></td>
+                    <td th:text="${portfolio.quantity * portfolio.stock.price}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/user/" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</section>
+</body>
+</html>
