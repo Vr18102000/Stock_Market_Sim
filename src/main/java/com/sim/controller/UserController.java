@@ -2,6 +2,7 @@ package com.sim.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sim.model.Portfolio;
 import com.sim.model.Transaction;
@@ -20,6 +22,7 @@ import com.sim.model.UserLeaderboardDTO;
 import com.sim.repository.PortfolioRepository;
 import com.sim.repository.TransactionRepository;
 import com.sim.repository.UserRepository;
+import com.sim.service.StockService;
 import com.sim.service.TradingService;
 
 import jakarta.servlet.http.HttpSession;
@@ -42,6 +45,9 @@ public class UserController {
 	
 	@Autowired
 	private TransactionRepository transactionRepo;
+	
+	@Autowired
+	private StockService stockService;
 	
 	@ModelAttribute
 	private void userDetails(Model m, Principal p) {
@@ -152,7 +158,20 @@ public class UserController {
 	    List<UserLeaderboardDTO> leaderboard = tradingService.getLeaderboard();
 	    model.addAttribute("leaderboard", leaderboard);
 	    return "user/leaderboard";  // Create this HTML page to display the leaderboard
-	}
-
+	}	
 	
+	@GetMapping("/stock")
+    public String stockPage(Model model) {
+		Map<String, Double> cachedStockPrices = stockService.getCachedStockPrices();  // Get cached stock prices
+	    model.addAttribute("stockPrices", cachedStockPrices);  // Add cached prices to the model
+        return "user/stock";  // Return the new Thymeleaf stock page
+    }
+	
+	// Endpoint to manually push a test WebSocket message
+//    @GetMapping("/test-websocket")
+//    @ResponseBody
+//    public String testWebSocket() {
+//        stockService.sendTestStockUpdate();  // Manually send a stock update
+//        return "Test WebSocket message sent!";
+//    }
 }
