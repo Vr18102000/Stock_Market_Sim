@@ -1,53 +1,95 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>Register</title>
 </head>
 <body>
-	<section>
-		<div class="container p-3">
-			<div class="row">
-				<div class="col-md-6 offset-md-3">
-					<div class="card">
-						<div class="card-header text-center fs-4">Register Page</div>
-						
-						<th:block th:if="${msg}">
-							<p class="text-center fs-4 text-success">[[${msg}]]</p>	
-						</th:block>
-												
-						
-						<div class="card-body">
-							<form action="createUser" method="post">
-								<div class="mb-3">
-									<label>Enter Full Name</label>
-									<input type="text" name="fullName" class="form-control">
-								</div>
-								<div class="mb-3">
-									<label>Enter Email</label>
-									<input type="text" name="email" class="form-control">
-								</div>
-								<div class="mb-3">
-									<label>Enter Address</label>
-									<input type="text" name="address" class="form-control">
-								</div>
-								<div class="mb-3">
-									<label>Enter Mobile Number</label>
-									<input type="number" name="mobileNumber" class="form-control">
-								</div>
-								<div class="mb-3">
-									<label>Enter Password</label>
-									<input type="text" name="password" class="form-control">
-								</div>
-								<button class="btn btn-primary col-md-12">Register</button>
-							</form>
-							<p class="sign-in-text text-center">Already have an account? <a href="/signin">Sign in here</a></p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+    <section>
+        <script>
+            function validateEmail() {
+                var email = document.getElementById("email").value;
+                var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+                if (!regex.test(email)) {
+                    alert("Please enter a valid email address.");
+                    return false;
+                }
+                return true;
+            }
+
+            // Password strength logic
+            var strength = {
+                1: "Weak",
+                2: "Fair",
+                3: "Good",
+                4: "Strong"
+            };
+
+            document.addEventListener("DOMContentLoaded", function () {
+                var passwordField = document.getElementById('password');
+                var meter = document.getElementById('password-strength-meter');
+
+                passwordField.addEventListener('input', function () {
+                    var val = passwordField.value;
+                    var score = 0;
+                    if (val.length >= 8) score++;
+                    if (/[a-z]/.test(val)) score++;
+                    if (/[A-Z]/.test(val)) score++;
+                    if (/\d/.test(val)) score++;
+                    if (/[@#$%^&+=]/.test(val)) score++;
+                    meter.value = score;
+                    text.innerHTML = strength[score];
+                });
+            });
+        </script>
+
+        <div class="container p-3">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card">
+                        <div class="card-header text-center fs-4">Register Page</div>
+
+                        <th:block th:if="${msg}">
+                            <p class="text-center fs-4 text-success">[[${msg}]]</p>    
+                        </th:block>
+
+                        <div class="card-body">
+                            <form action="createUser" method="post" onsubmit="return validateEmail()">
+                                <div class="mb-3">
+                                    <label>Enter Full Name</label>
+                                    <input type="text" name="fullName" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Enter Email</label>
+                                    <input type="email" id="email" name="email" class="form-control" 
+                                    title="Please enter a valid email address." required>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Enter Address</label>
+                                    <input type="text" name="address" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Enter Mobile Number</label>
+                                    <input type="number" name="mobileNumber" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Enter Password</label>
+                                    <input type="password" id="password" name="password" class="form-control"
+                                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}"
+                                           title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character (@#$%^&+=)"
+                                           required>
+                                    <meter max="4" id="password-strength-meter" value="0"></meter>                            
+                                </div>
+
+                                <button class="btn btn-primary col-md-12">Register</button>
+                            </form>
+                            <p class="sign-in-text text-center">Already have an account? <a href="/signin">Sign in here</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
