@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{starting_base::layout(~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
 </head>
 <body>
-    <section>
+    <section class="custom-container">
         <script>
             function validateEmail() {
                 var email = document.getElementById("email").value;
@@ -84,7 +84,7 @@
 
                                 <button class="btn btn-primary col-md-12">Register</button>
                             </form>
-                            <p class="sign-in-text text-center">Already have an account? <a href="/signin">Sign in here</a></p>
+                            <p class="sign-in-text text-center">Already have an account? <a href="/signin" class="text-decoration-none">Login here</a></p>
                         </div>
                     </div>
                 </div>

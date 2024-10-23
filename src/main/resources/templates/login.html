@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{starting_base::layout(~{::section})}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,8 +41,9 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100 py-2">Login</button>
                             </form>
-                            <div class="text-center mt-4">
-                                <a href="loadForgotPassword" class="text-decoration-none">Forgot Password?</a>
+                            <div class="text-center mt-2">
+                            	<p class="sign-in-text text-center"><a href="/register" class="text-decoration-none">Register here</a></p>
+                                <p class="sign-in-text text-center"><a href="loadForgotPassword" class="text-decoration-none">Forgot Password?</a></p>
                             </div>
                         </div>
                     </div>

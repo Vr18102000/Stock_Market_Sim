@@ -1,0 +1,247 @@
+@charset "UTF-8";
+
+@import
+	url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap')
+	;
+/* Make sure the canvas takes the full screen as the background */
+body, html {
+	margin: 0;
+	padding: 0;
+}
+
+canvas {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 0; /* Background canvas */
+}
+
+.custom-container {
+	z-index: 1; /* Keep the login form on top */
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	overflow: hidden;
+	position: relative;
+	flex-direction: column;
+}
+
+.card {
+	background-color: rgba(255, 255, 255, 0.9);
+	/* Semi-transparent background */
+}
+
+.dg.ac {
+	z-index: 1000 !important;
+	position: absolute !important;
+}
+
+/* * {
+	margin: 0;
+	padding: 0;
+} */
+
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: black;
+	animation: gradientBackground 10s ease infinite;
+	flex-direction: column;
+	overflow: hidden;
+	height: 100vh;
+}
+
+.rbox, .box ,.pbox{
+	position: relative;
+	width: 400px;
+	height: 200px;
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+	transition: 0.5s;
+	perspective: 1000px;
+	min-height: 200px; /* Ensures minimum height */
+    flex-shrink: 0;
+}
+.rbox{	
+	width: 480px;
+	margin-bottom: -90px;
+	transition: 0.6s;
+}
+.box + .pbox{
+	margin-top: -90px;
+}
+.pbox{
+	width: 700px;
+}
+
+.rbox:hover{
+	transform: perspective(1000px) rotateY(10deg) rotateX(5deg);
+	width: 650px;
+	height: 650px;
+	margin-bottom:-130px;
+}
+.rbox:hover + .box + .pbox{
+	 margin-top: -120px;
+}
+.box:hover{
+	transform: perspective(1000px) rotateY(10deg) rotateX(5deg);
+	width: 650px;
+	height: 500px;
+}
+.pbox:hover{
+	transform: perspective(1000px) rotateY(10deg) rotateX(5deg);
+	width: 750px;
+	height: 500px;
+}
+
+.register, .login, .reset {
+	position: absolute;
+	inset: 75px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(3px);
+	z-index: 1000;
+	box-shadow: 0 8px 32px 0 rgba(213, 166, 189, 0.5);
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 10px;
+	border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+	transition: 0.5s;
+	overflow: hidden;
+}
+
+.register:hover, .login:hover, .reset:hover {
+    box-shadow: 0 8px 32px 0 rgba(138, 159, 131, 1);
+}
+
+.rbox:hover .register, .box:hover .login, .pbox:hover .reset {
+	inset: 90px;
+}
+
+.registerBx {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 20px;
+	width: 70%;
+	transform: translateY(195px);
+	transition: 0.6s;
+}
+
+.loginBx, .resetBx {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 20px;
+	width: 70%;
+	transform: translateY(97px);
+	transition: 0.5s;
+}
+
+.rbox:hover .registerBx, .box:hover .loginBx, .pbox:hover .resetBx {
+	transform: translate(0px);
+}
+
+.registerBx h2, .loginBx h2, .resetBx h2 {
+	text-transform: uppercase;
+	font-weight: 600;
+	letter-spacing: 0.2em;
+}
+
+.h2, h2 {
+    font-size: calc(1.0rem + .9vw);
+}
+
+.registerBx h2 i, .loginBx h2 i, .resetBx h2 i {
+	color: #ffe066;
+    text-shadow: 0 0 5px #ffe066, 0 0 25px #ffe066;
+}
+
+.registerBx input, .loginBx input, .resetBx input {
+	width: 100%;
+	padding: 10px 20px;
+	outline: none;
+	border: none;
+	font-size: 1em;
+	color: #fff;
+	background: rgba(0, 0, 0, 0.1);
+	border: 2px solid #fff;
+	border-radius: 30px;
+	margin-bottom: 10px;
+}
+
+.registerBx input::placeholder, .loginBx input::placeholder, .resetBx input::placeholder {
+	color: #999;
+}
+
+.registerBx input[type="submit"], .loginBx input[type="submit"], .resetBx input[type="submit"] {
+	background: #45f3ff;
+	border: none;
+	font-weight: 500;
+	color: #111;
+	cursor: pointer;
+	transition: 0.5s;
+}
+
+.registerBx input[type="submit"]:hover, .loginBx input[type="submit"]:hover, .resetBx input[type="submit"]:hover
+	{
+	box-shadow: 0 0 10px #45f3ff, 0 0 20px #45f3ff;
+}
+
+.registerBx input:focus, .loginBx input:focus, .resetBx input:focus {
+	border: 2px solid #2E7D7E;
+	box-shadow: 0 0 10px #2E7D7E, 0 0 20px #b0e0e6;
+}
+.registerBx:hover input:focus, .loginBx:hover input:focus, .resetBx:hover input:focus {
+    box-shadow: 0 0 10px #2E7D7E, 0 0 20px #b0e0e6;
+}
+
+.group {
+	width: 100%;
+	displace: flex;
+	justify-content: space-between;
+}
+
+.group a {
+	color: #fff;
+	text-decoration: none;
+}
+
+.group a:nth-child(2) {
+	color: #ff2770;
+	font-weight: 600px;
+}
+
+#strength-text {
+  font-size: 1em;
+  margin-left: 10px;
+  color: #ff2770; /* Red by default, you can change this */
+}
+.weak {
+  color: red;
+}
+.fair {
+  color: orange;
+}
+.good {
+  color: yellowgreen;
+}
+.strong {
+  color: green;
+}

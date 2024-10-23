@@ -1,13 +1,124 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"	th:replace="~{starting_base::layout(~{::section})}">
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
-	<section>
-		<h1>Index Page</h1>
-	</section>
+	<section class="custom-container">
+		<!-- Register Form     -->
+		<div class="rbox">
+			<div class="register">
+				<div class="registerBx">
+					<h2>
+						<i class="fa-solid fa-registered"></i> Register
+					</h2>
+					<th:block th:if="${msg}">
+						<p class="text-center fs-4 text-success">[[${msg}]]</p>
+					</th:block>
+					<form action="createUser" method="post"
+						onsubmit="return validateEmail()">
+						<input type="text" name="fullName" placeholder="Full Name"
+							required> <input type="email" id="email" name="email"
+							placeholder="Email" title="Please enter a valid email address."
+							required> <input type="text" name="address"
+							placeholder="Address"> <input type="number"
+							name="mobileNumber" placeholder="Mobile Number"> <input
+							type="password" id="password" name="password"
+							pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}"
+							title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character (@#$%^&+=)"
+							placeholder="Password" required>
+						<meter max="4" id="password-strength-meter" value="0"></meter>
+						<span id="strength-text"></span> <input type="submit" value="Sign Up">
+					</form>
+				</div>
+			</div>
+		</div>
 
+		<!-- Login Form      -->
+		<div class="box">
+			<div class="login">
+				<div class="loginBx">
+					<h2>
+						<i class="fa-solid fa-right-to-bracket"></i> Login
+					</h2>
+					<div th:if="${param.error}" class="alert alert-danger mt-3 mx-3">
+						[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</div>
+					<div th:if="${param.logout}" class="alert alert-success mt-3 mx-3">
+						Logout Successfully</div>
+					<form action="/login" method="post">
+						<input type="text" id="username" name="username"
+							placeholder="Email" required> <input type="password"
+							id="password" name="password" placeholder="Password" required>
+						<input type="submit" value="Sign In">
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- Forgot Password -->
+		<div class="pbox">
+			<div class="reset">
+				<div class="resetBx">
+					<h2>
+						<i class="fa-solid fa-key"></i> Reset Password
+					</h2>
+					<th:block th:if="${session.msg}">
+						<p class="text-center fs-4 text-success">[[${session.msg}]]</p>
+						<th:block th:text="${@userServiceImpl.removeSessionMessage()}"></th:block>
+					</th:block>
+					<form action="/forgotPassword" method="post">
+						<input type="text" name="email" placeholder="Email" required>
+						<input type="text" name="mobileNumber" placeholder="Mobile Number"
+							required>
+						<input type="submit" value="Submit">
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- JavaScript to handle validation and password strength -->
+		<script>
+			function validateEmail() {
+				var email = document.getElementById("email").value;
+				var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+				if (!regex.test(email)) {
+					alert("Please enter a valid email address.");
+					return false;
+				}
+				return true;
+			}
+
+			var strength = {
+				1 : "Weak",
+				2 : "Fair",
+				3 : "Good",
+				4 : "Strong"
+			};
+			document.addEventListener("DOMContentLoaded", function() {
+				var passwordField = document.getElementById('password');
+				var meter = document.getElementById('password-strength-meter');
+				var text = document.getElementById('strength-text');
+
+				passwordField.addEventListener('input', function() {
+					var val = passwordField.value;
+					var score = 0;
+					if (val.length >= 8)
+						score++;
+					if (/[a-z]/.test(val))
+						score++;
+					if (/[A-Z]/.test(val))
+						score++;
+					if (/\d/.test(val))
+						score++;
+					if (/[@#$%^&+=]/.test(val))
+						score++;
+					meter.value = score;
+				});
+			});
+		</script>
+	</section>
 </body>
 </html>
