@@ -62,7 +62,7 @@ public class CustomFailureHandler  extends SimpleUrlAuthenticationFailureHandler
 			}
 		}
 		
-		super.setDefaultFailureUrl("/signin?error");
+		super.setDefaultFailureUrl("/?error");
 		super.onAuthenticationFailure(request, response, exception);
 	}
 	

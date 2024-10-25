@@ -89,19 +89,20 @@ public class HomeController {
 				session.setAttribute("msg", "Error");
 			}
 		}
-		
-		
-		return "redirect:/register";
+//		return "redirect:/register";
+		return "redirect:/";
 	}
 	
 	@GetMapping("/verify")
-	public String verifyAccount(@Param("code") String code)
+	public String verifyAccount(@Param("code") String code, HttpSession session)
 	{
 		if(userService.verifyAccount(code))
 		{
-			return "verif_success";
+			session.setAttribute("msg", "Account verified successfully! Please log in.");
+	        return "redirect:/";
 		} else {
-			return "verif_failed";
+			session.setAttribute("msg", "Invalid or expired verification link.");
+	        return "redirect:/";
 		}
 
 	}
@@ -120,34 +121,50 @@ public class HomeController {
 	}
 	
 	@PostMapping("/forgotPassword")
-	public String forgotPassword(@RequestParam String email, @RequestParam String mobileNumber, HttpSession session)
-	{
-		UserDtls user = userRepo.findByEmailAndMobileNumber(email, mobileNumber);
-		if(user != null)
-		{
-			return "redirect:/loadResetPassword/" + user.getId();
-		} else {
-			session.setAttribute("msg", "Invalid email & mobile number");
-			return "forgot_password";
-		}
-		
-	}
+	public String forgotPassword(@RequestParam String email, @RequestParam String mobileNumber, HttpSession session) {
+        UserDtls user = userRepo.findByEmailAndMobileNumber(email, mobileNumber);
+        if (user != null) {
+//        	return "redirect:/loadResetPassword/" + user.getId();
+            userService.sendResetPasswordEmail(user);  // New service to send the reset link
+            session.setAttribute("msg", "Password reset link has been sent to your email");
+        } else {
+            session.setAttribute("msg", "Invalid email & mobile number");
+        }
+        return "redirect:/";
+    }
+	
+	@GetMapping("/resetPasswordForm")
+    public String resetPasswordForm(@RequestParam("token") String token, @RequestParam("email") String email, Model model, HttpSession session) {
+        UserDtls user = userService.findUserByResetToken(token, email);
+        if (user == null) {
+            session.setAttribute("msg", "Invalid or expired reset token");
+            return "redirect:/";
+        }
+        model.addAttribute("token", token);
+        model.addAttribute("email", email);
+        return "reset_password";
+    }
 	
 	@PostMapping("/changePassword")
-	public String resetPassword(@RequestParam String psw, @RequestParam Integer id, HttpSession session)
-	{
-		UserDtls user = userRepo.findById(id).get();
-		String encryptPsw = passwordEncoder.encode(psw);
-		user.setPassword(encryptPsw);
-		
-		UserDtls updateUser = userRepo.save(user);
-		
-		if(updateUser != null)
-		{
-			session.setAttribute("msg", "Password Changed Successfully");
-		}
-		
-		return "redirect:/loadForgotPassword";
-	}
+	public String resetPassword(@RequestParam String psw, @RequestParam String cpsw, @RequestParam String email, @RequestParam String token, HttpSession session) {
+        if (!psw.equals(cpsw)) {
+            session.setAttribute("msg", "Passwords do not match.");
+            return "redirect:/resetPasswordForm?token=" + token + "&email=" + email;
+        }
+
+        if (!psw.matches("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}")) {
+            session.setAttribute("msg", "Password must meet the required pattern.");
+            return "redirect:/resetPasswordForm?token=" + token + "&email=" + email;
+        }
+
+        boolean isChanged = userService.updatePassword(email, psw, token);
+        if (isChanged) {
+            session.setAttribute("msg", "Password changed successfully!");
+            return "redirect:/";
+        } else {
+            session.setAttribute("msg", "Invalid token or expired.");
+            return "redirect:/";
+        }
+    }
 	
 }

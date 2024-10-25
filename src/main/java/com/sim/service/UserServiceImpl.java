@@ -1,6 +1,7 @@
 package com.sim.service;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -101,11 +102,8 @@ public class UserServiceImpl implements UserService{
 			user.setEnabled(true);
 			user.setVerificationCode(null);
 			userRepo.save(user);
-			
-			
 			return true;
 		}
-		
 		return false;
 	}
 
@@ -114,7 +112,6 @@ public class UserServiceImpl implements UserService{
 		
 		HttpSession session = ((ServletRequestAttributes)(RequestContextHolder.getRequestAttributes())).getRequest()
 								.getSession();
-		
 		session.removeAttribute("msg");
 		
 	}
@@ -156,10 +153,56 @@ public class UserServiceImpl implements UserService{
 			userRepo.save(user);
 			return true;
 		}
-		
 		return false;
-		
 	}
 	
-	
+	@Override
+    public void sendResetPasswordEmail(UserDtls user) {
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        userRepo.save(user);
+
+        String resetLink = "http://localhost:8080/resetPasswordForm?token=" + token + "&email=" + user.getEmail();
+        String subject = "Password Reset Request";
+        String content = "Dear [[name]],<br>"
+                + "Click the link below to reset your password:<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">Reset Password</a></h3>"
+                + "Ignore this email if you didn't request a password reset.";
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+
+            helper.setFrom("your-email@example.com");
+            helper.setTo(user.getEmail());
+            helper.setSubject(subject);
+
+            content = content.replace("[[name]]", user.getFullName());
+            content = content.replace("[[URL]]", resetLink);
+
+            helper.setText(content, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public UserDtls findUserByResetToken(String token, String email) {
+        return userRepo.findByResetTokenAndEmail(token, email);
+    }
+
+    @Override
+    public boolean updatePassword(String email, String newPassword, String token) {
+        UserDtls user = userRepo.findByResetTokenAndEmail(token, email);
+        if (user != null && user.getResetToken().equals(token)) {
+            user.setPassword(passwordEncode.encode(newPassword));
+            user.setResetToken(null);  // Clear the token
+            userRepo.save(user);
+            return true;
+        }
+        return false;
+    }
 }
+

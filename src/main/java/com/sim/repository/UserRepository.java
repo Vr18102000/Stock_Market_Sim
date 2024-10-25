@@ -19,4 +19,10 @@ public interface UserRepository extends JpaRepository<UserDtls, Integer>{
 	@Query("update UserDtls user set user.failedAttempt=?1 where email=?2")
 	@Modifying
 	public void updateFailedAttempt(int attempt, String email);
+	
+	public UserDtls findByResetTokenAndEmail(String resetToken, String email);
+	
+	@Query("update UserDtls user set user.resetToken = null, user.tokenExpiry = null where email = ?1")
+    @Modifying
+    public void clearResetTokenAndExpiry(String email);
 }

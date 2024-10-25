@@ -42,4 +42,8 @@ public class UserDtls {
 	private boolean enabled;
 	
 	private String verificationCode;
+	
+	private String resetToken;
+	
+	private Date tokenExpiry;
 }

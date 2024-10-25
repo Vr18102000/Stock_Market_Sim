@@ -47,10 +47,16 @@ public class SecurityConfig{
 		http.authorizeHttpRequests(requests -> requests.requestMatchers("/admin/**").hasRole("ADMIN")
 				.requestMatchers("/user/**").hasRole("USER")
 				.requestMatchers("/**").permitAll())
-				.formLogin(login -> login.loginPage("/signin").loginProcessingUrl("/login")
+				.formLogin(login -> login.loginPage("/").loginProcessingUrl("/login")
 				.failureHandler(failureHandler)
 				.successHandler(customSuccessHandler)).csrf(csrf -> csrf.disable());
-
+		
+//		http.authorizeHttpRequests(requests -> requests.requestMatchers("/admin/**").hasRole("ADMIN")
+//				.requestMatchers("/user/**").hasRole("USER")
+//				.requestMatchers("/**").permitAll())
+//				.formLogin(login -> login.loginPage("/signin").loginProcessingUrl("/login")
+//				.failureHandler(failureHandler)
+//				.successHandler(customSuccessHandler)).csrf(csrf -> csrf.disable());
 				http.authenticationProvider(getDaoAuthProvider());
                  
 		return http.build();
