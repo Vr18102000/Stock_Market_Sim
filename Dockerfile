@@ -1,17 +1,20 @@
-# Use the latest Maven image with JDK 17, which supports most Java 21 features for building
-FROM maven:3.8.8-eclipse-temurin-17 as builder
+# Use a Java 21 base image
+FROM eclipse-temurin:21-jdk as builder
+
+# Install Maven
+RUN apt-get update && apt-get install -y maven
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the Maven project files
+# Copy the project files
 COPY pom.xml .
 COPY src ./src
 
-# Build the application
+# Build the application with Maven
 RUN mvn clean package -DskipTests
 
-# Use the Java 21 runtime for the final build
+# Use a minimal Java 21 runtime for the final image
 FROM eclipse-temurin:21-jdk
 
 # Set the working directory
