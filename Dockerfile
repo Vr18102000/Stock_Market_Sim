@@ -1,14 +1,27 @@
-# Use the official OpenJDK 21 JDK image as the base image
-FROM eclipse-temurin:21-jdk
+# Use the official Maven image to build the application
+FROM maven:3.8.6-openjdk-21 as builder
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the built JAR file into the container
-COPY target/Stock_Market_Sim-0.0.1-SNAPSHOT.jar app.jar
+# Copy the Maven project files
+COPY pom.xml .
+COPY src ./src
 
-# Expose the port that the application will run on
+# Build the application
+RUN mvn clean package -DskipTests
+
+# Use a minimal Java runtime image for the final build
+FROM eclipse-temurin:21-jdk
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the JAR file from the builder stage
+COPY --from=builder /app/target/Stock_Market_Sim-0.0.1-SNAPSHOT.jar app.jar
+
+# Expose the application port
 EXPOSE 8080
 
-# Run the JAR file
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
