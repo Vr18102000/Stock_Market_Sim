@@ -17,10 +17,18 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig{
 	
 	@Autowired
-	public AuthenticationSuccessHandler customSuccessHandler;
+//	public AuthenticationSuccessHandler customSuccessHandler;
+//	
+//	@Autowired
+//	public CustomFailureHandler failureHandler;
 	
-	@Autowired
-	public CustomFailureHandler failureHandler;
+	private final AuthenticationSuccessHandler customSuccessHandler;
+    private final CustomFailureHandler failureHandler;
+
+    public SecurityConfig(AuthenticationSuccessHandler customSuccessHandler, CustomFailureHandler failureHandler) {
+        this.customSuccessHandler = customSuccessHandler;
+        this.failureHandler = failureHandler;
+    }
 	
 	@Bean
 	public UserDetailsService getUserDetailsService() {

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -20,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
 	@Autowired
+	@Lazy
 	private UserService userService;
 	
 	@Override

@@ -31,23 +31,41 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/user")
 public class UserController {
 
-	@Autowired
-	private UserRepository userRepo;
+//	@Autowired
+//	private UserRepository userRepo;
+//	
+//	@Autowired
+//	private TradingService tradingService;
+//	
+//	@Autowired
+//	private BCryptPasswordEncoder passwordEncoder;
+//	
+//	@Autowired
+//	private PortfolioRepository portfolioRepo;
+//	
+//	@Autowired
+//	private TransactionRepository transactionRepo;
+//	
+//	@Autowired
+//	private StockService stockService;
 	
-	@Autowired
-	private TradingService tradingService;
-	
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
-	
-	@Autowired
-	private PortfolioRepository portfolioRepo;
-	
-	@Autowired
-	private TransactionRepository transactionRepo;
-	
-	@Autowired
-	private StockService stockService;
+    private final UserRepository userRepo;
+    private final TradingService tradingService;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final PortfolioRepository portfolioRepo;
+    private final TransactionRepository transactionRepo;
+    private final StockService stockService;
+
+    @Autowired
+    public UserController(UserRepository userRepo, TradingService tradingService, BCryptPasswordEncoder passwordEncoder,
+                          PortfolioRepository portfolioRepo, TransactionRepository transactionRepo, StockService stockService) {
+        this.userRepo = userRepo;
+        this.tradingService = tradingService;
+        this.passwordEncoder = passwordEncoder;
+        this.portfolioRepo = portfolioRepo;
+        this.transactionRepo = transactionRepo;
+        this.stockService = stockService;
+    }
 	
 	@ModelAttribute
 	private void userDetails(Model m, Principal p) {

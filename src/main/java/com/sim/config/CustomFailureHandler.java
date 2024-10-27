@@ -3,6 +3,7 @@ package com.sim.config;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -21,6 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class CustomFailureHandler  extends SimpleUrlAuthenticationFailureHandler{
 
 	@Autowired
+	@Lazy
 	private UserService userService;
 	
 	@Autowired

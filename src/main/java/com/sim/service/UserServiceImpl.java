@@ -23,14 +23,25 @@ import net.bytebuddy.utility.RandomString;
 @Service
 public class UserServiceImpl implements UserService{
 
-	@Autowired
-	private UserRepository userRepo;
+//	@Autowired
+//	private UserRepository userRepo;
+//	
+//	@Autowired
+//	private BCryptPasswordEncoder passwordEncoder;
+//	
+//	@Autowired
+//	private JavaMailSender mailSender;
 	
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
-	
-	@Autowired
-	private JavaMailSender mailSender;
+	 private final UserRepository userRepo;
+	 private final BCryptPasswordEncoder passwordEncoder;
+	 private final JavaMailSender mailSender;
+
+	 @Autowired
+	 public UserServiceImpl(UserRepository userRepo, BCryptPasswordEncoder passwordEncoder, JavaMailSender mailSender) {
+		 this.userRepo = userRepo;
+	     this.passwordEncoder = passwordEncoder;
+	     this.mailSender = mailSender;
+	 }
 	
 	@Override
 	public UserDtls createUser(UserDtls user, String url) {

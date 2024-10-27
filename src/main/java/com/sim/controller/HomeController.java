@@ -24,13 +24,24 @@ import jakarta.servlet.http.HttpSession;
 public class HomeController {
 	
 	@Autowired
-	private UserService userService;
+//	private UserService userService;
+//	
+//	@Autowired
+//	private UserRepository userRepo;
+//	
+//	@Autowired
+//	private BCryptPasswordEncoder passwordEncoder;
 	
-	@Autowired
-	private UserRepository userRepo;
-	
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final UserRepository userRepo;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    public HomeController(UserService userService, UserRepository userRepo, BCryptPasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
+    }
 	
 	@ModelAttribute
 	private void userDetails(Model m, Principal p) {
