@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService{
 	private UserRepository userRepo;
 	
 	@Autowired
-	private BCryptPasswordEncoder passwordEncode;
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private JavaMailSender mailSender;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public UserDtls createUser(UserDtls user, String url) {
 		
-		user.setPassword(passwordEncode.encode(user.getPassword()));
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setRole("ROLE_USER");
 		
 		user.setEnabled(false);
@@ -197,7 +197,7 @@ public class UserServiceImpl implements UserService{
     public boolean updatePassword(String email, String newPassword, String token) {
         UserDtls user = userRepo.findByResetTokenAndEmail(token, email);
         if (user != null && user.getResetToken().equals(token)) {
-            user.setPassword(passwordEncode.encode(newPassword));
+            user.setPassword(passwordEncoder.encode(newPassword));
             user.setResetToken(null);  // Clear the token
             userRepo.save(user);
             return true;

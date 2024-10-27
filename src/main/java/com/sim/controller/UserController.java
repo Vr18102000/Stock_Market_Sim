@@ -38,7 +38,7 @@ public class UserController {
 	private TradingService tradingService;
 	
 	@Autowired
-	private BCryptPasswordEncoder passwordEncode;
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private PortfolioRepository portfolioRepo;
@@ -79,11 +79,11 @@ public class UserController {
 		String email = p.getName();
 		UserDtls loginUser = userRepo.findByEmail(email);
 		
-		boolean f = passwordEncode.matches(oldPass, loginUser.getPassword());
+		boolean f = passwordEncoder.matches(oldPass, loginUser.getPassword());
 		
 		if(f)
 		{
-			loginUser.setPassword(passwordEncode.encode(newPass));
+			loginUser.setPassword(passwordEncoder.encode(newPass));
 			UserDtls updatePasswordUser = userRepo.save(loginUser);
 			
 			if(updatePasswordUser != null)
