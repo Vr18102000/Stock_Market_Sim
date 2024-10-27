@@ -1,5 +1,5 @@
-# Use the official Maven image to build the application
-FROM maven:3.8.6-openjdk-21 as builder
+# Use the latest Maven image with JDK 17, which supports most Java 21 features for building
+FROM maven:3.8.8-eclipse-temurin-17 as builder
 
 # Set the working directory
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY src ./src
 # Build the application
 RUN mvn clean package -DskipTests
 
-# Use a minimal Java runtime image for the final build
+# Use the Java 21 runtime for the final build
 FROM eclipse-temurin:21-jdk
 
 # Set the working directory
