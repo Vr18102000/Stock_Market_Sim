@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class StockService {
 
     private static final Logger logger = LoggerFactory.getLogger(StockService.class);
-    private static final String API_URL = "http://localhost:5000/stock/";
+    private static final String API_URL = "https://stockmarketsim-api.onrender.com/stock/";
 
     private Map<String, Double> stockCache = new HashMap<>();
 
