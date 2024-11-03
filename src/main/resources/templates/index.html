@@ -81,6 +81,20 @@
 
 		<!-- JavaScript to handle validation and password strength -->
 		<script>
+		
+			// Select all boxes
+			const boxes = document.querySelectorAll('.rbox, .box, .pbox');
+	
+			// Add click event listener to each box
+			boxes.forEach((box) => {
+			  box.addEventListener('click', () => {
+			    // Remove 'selected' class from all boxes
+			    boxes.forEach((b) => b.classList.remove('selected'));
+			    // Add 'selected' class to the clicked box
+			    box.classList.add('selected');
+			  });
+			});
+
 			function validateEmail() {
 				var email = document.getElementById("email").value;
 				var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

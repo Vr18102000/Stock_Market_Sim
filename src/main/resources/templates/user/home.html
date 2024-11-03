@@ -1,25 +1,96 @@
+<!-- home.html -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
 </head>
 <body>
-	<section>
-		<h1>User After Login: Home Page</h1>
-		<h1>Name			: [[${user.fullName}]]</h1>
-		<h1>Email			: [[${user.email}]]</h1>
-		<h1>Mobile Number	: [[${user.mobileNumber}]]</h1>
-		<br><br>
-		<form action="/user/buyStock" method="post">
-		    <input type="text" name="symbol" placeholder="Stock Symbol (e.g., AAPL)">
-		    <input type="number" name="quantity" placeholder="Quantity">
-		    <button type="submit">Buy Stock</button>
-		</form>
-		<br><br>
-		<a href="/user/portfolio" class="btn btn-info">Portfolio</a>
-		<a href="/logout">Logout</a>
-	</section>
+<section class="container py-5">
+    <!-- Welcome Card -->
+    <div class="card bg-gradient text-white mb-5 p-4 shadow-lg" style="border-radius: 15px;">
+        <div class="card-body">
+            <h1 class="display-4">Welcome, [[${user.fullName}]]</h1>
+            <p class="lead">Email: [[${user.email}]]</p>
+            <p>Mobile: [[${user.mobileNumber}]]</p>
+        </div>
+    </div>
 
+    <!-- Search Stock Form -->
+    <div class="card bg-dark text-light shadow-lg mb-4" style="border-radius: 15px;">
+        <div class="card-body p-4">
+            <h3 class="card-title">Find a Stock</h3>
+            <form id="searchForm" class="d-flex">
+                <input type="text" id="symbol" class="form-control me-2" placeholder="Stock Symbol (e.g., AAPL)" required>
+                <button type="button" class="btn btn-info" onclick="searchStock()">Search</button>
+            </form>
+            <div id="errorMessage" class="text-danger mt-2" style="display: none;">Stock not found!</div>
+        </div>
+    </div>
+
+    <!-- Stock Details and Buy Form -->
+    <div id="stockDetails" class="card bg-gradient text-light shadow-lg" style="border-radius: 15px; display: none;">
+        <div class="card-body">
+            <h3 class="card-title">Stock Details</h3>
+            <p>Price: ₹<span id="stockPrice"></span></p>
+            <input type="number" id="quantity" class="form-control mb-3" placeholder="Quantity" required>
+            <button type="button" class="btn btn-success w-100" onclick="buyStock()">Buy Stock</button>
+        </div>
+    </div>
+
+    <!-- Response Message -->
+    <div id="responseMessage" class="mt-3" style="display: none; font-weight: bold;"></div>
+
+	<!-- JavaScript for Stock Search and Purchase with Error Handling -->
+	<script>
+	    function searchStock() {
+	        const symbol = document.getElementById("symbol").value;
+	        const errorMessage = document.getElementById("errorMessage");
+	
+	        fetch(`/user/searchStock?symbol=${symbol}`)
+	            .then(response => response.json())
+	            .then(data => {
+	                if (data.price) {
+	                    document.getElementById("stockPrice").innerText = data.price.toFixed(2);
+	                    document.getElementById("stockDetails").style.display = "block";
+	                    errorMessage.style.display = "none";
+	                } else {
+	                    errorMessage.style.display = "block";
+	                }
+	            })
+	            .catch(error => console.error("Error fetching stock price:", error));
+	    }
+	
+	    function buyStock() {
+	        const symbol = document.getElementById("symbol").value;
+	        const quantity = document.getElementById("quantity").value;
+	        const responseDiv = document.getElementById("responseMessage");
+	
+	        fetch("/user/buyStock", {
+	            method: "POST",
+	            headers: { "Content-Type": "application/json" },
+	            body: JSON.stringify({ symbol: symbol, quantity: quantity })
+	        })
+	        .then(response => {
+	            // Check if the response status is not OK (i.e., 200-299)
+	            if (!response.ok) {
+	                return response.text().then(text => { throw new Error(text); }); // Read error message and throw
+	            }
+	            return response.text();  // Success response as text
+	        })
+	        .then(message => {
+	            responseDiv.style.display = "block";
+	            responseDiv.style.color = "green";
+	            responseDiv.innerText = message;
+	        })
+	        .catch(error => {
+	            console.error("Error buying stock:", error);
+	            responseDiv.style.display = "block";
+	            responseDiv.style.color = "red";
+	            responseDiv.innerText = error.message || "Error processing your request.";
+	        });
+	    }
+	</script>
+</section>
 </body>
 </html>

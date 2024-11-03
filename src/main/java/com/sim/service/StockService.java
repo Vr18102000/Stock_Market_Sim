@@ -21,7 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class StockService {
 
     private static final Logger logger = LoggerFactory.getLogger(StockService.class);
-    private static final String API_URL = "https://stockmarketsim-api.onrender.com/stock/";
+//    private static final String API_URL = "https://stockmarketsim-api.onrender.com/stock/";
+    private static final String API_URL = "http://localhost:5000/stock/";
 
     private Map<String, Double> stockCache = new HashMap<>();
 
@@ -90,6 +91,23 @@ public class StockService {
             logger.error("Failed to fetch stock data. Status: " + response.getStatus());
             return null;
         }
+    }
+    
+    // Method to get the price of a specific stock symbol, with cache support
+    public double getStockPrice(String symbol) {
+        // Check if the stock price is already cached
+        if (stockCache.containsKey(symbol)) {
+            return stockCache.get(symbol);
+        }
+        
+        // If not cached, fetch the price from the API and store it in the cache
+        Stock stock = getStockData(symbol);
+        if (stock != null) {
+            stockCache.put(symbol, stock.getPrice());  // Cache the fetched price
+            return stock.getPrice();
+        }
+
+        return -1;  // Return -1 if the stock is not found
     }
 
     // Get cached stock prices for immediate use on the stock page

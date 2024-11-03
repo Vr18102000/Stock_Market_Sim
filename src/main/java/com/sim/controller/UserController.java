@@ -1,16 +1,20 @@
 package com.sim.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -92,38 +96,85 @@ public class UserController {
 	}
 	
 	@PostMapping("/updatePassword")
-	public String changePassword(Principal p, @RequestParam("oldPass") String oldPass, @RequestParam("newPass") String newPass, HttpSession session)
-	{
-		String email = p.getName();
-		UserDtls loginUser = userRepo.findByEmail(email);
-		
-		boolean f = passwordEncoder.matches(oldPass, loginUser.getPassword());
-		
-		if(f)
-		{
-			loginUser.setPassword(passwordEncoder.encode(newPass));
-			UserDtls updatePasswordUser = userRepo.save(loginUser);
-			
-			if(updatePasswordUser != null)
-			{
-				session.setAttribute("msg", "Password Change Successfully");
-			} else {
-				session.setAttribute("msg", "Something wrong on server");
-			}
-		
-		} else {
-			session.setAttribute("msg", "Old password is incorrect");
-		}
-		return "redirect:/user/changePass";
+	public String changePassword(Principal p, @RequestParam("oldPass") String oldPass, @RequestParam("newPass") String newPass, HttpSession session) {
+	    String email = p.getName();
+	    UserDtls loginUser = userRepo.findByEmail(email);
+
+	    // Check if the old password matches
+	    boolean isOldPasswordCorrect = passwordEncoder.matches(oldPass, loginUser.getPassword());
+	    
+	    if (!isOldPasswordCorrect) {
+	        session.setAttribute("msg", "Old password is incorrect");
+	        return "redirect:/user/changePass";
+	    }
+
+	    // Check new password strength
+	    if (!isStrongPassword(newPass)) {
+	        session.setAttribute("msg", "Password must be at least 8 characters long, contain uppercase and lowercase letters, numbers, and special characters.");
+	        return "redirect:/user/changePass";
+	    }
+
+	    // Update the password
+	    loginUser.setPassword(passwordEncoder.encode(newPass));
+	    UserDtls updatedUser = userRepo.save(loginUser);
+
+	    // Set session message based on success or failure
+	    if (updatedUser != null) {
+	        session.setAttribute("msg", "Password changed successfully");
+	    } else {
+	        session.setAttribute("msg", "Error occurred on the server");
+	    }
+
+	    return "redirect:/user/changePass";
 	}
 
+	// Utility method to check password strength
+	private boolean isStrongPassword(String password) {
+	    return password.length() >= 8 &&
+	           password.matches(".*[A-Z].*") &&    // At least one uppercase letter
+	           password.matches(".*[a-z].*") &&    // At least one lowercase letter
+	           password.matches(".*[0-9].*") &&    // At least one digit
+	           password.matches(".*[@$!%*?&#].*"); // At least one special character
+	}
+
+//	@PostMapping("/buyStock")
+//	public String buyStock(@RequestParam String symbol, @RequestParam int quantity, Principal principal) {
+//	    UserDtls user = userRepo.findByEmail(principal.getName());
+//
+//	    tradingService.buyStock(symbol, quantity, user);
+//
+//	    return "redirect:/user/";  // Redirect back to home
+//	}
+	
+	@GetMapping("/searchStock")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> searchStock(@RequestParam String symbol) {
+        Map<String, Object> response = new HashMap<>();
+        double price = stockService.getStockPrice(symbol);  // Fetch stock price from StockService
+
+        if (price > 0) {
+            response.put("price", price);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("error", "Stock not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+	
 	@PostMapping("/buyStock")
-	public String buyStock(@RequestParam String symbol, @RequestParam int quantity, Principal principal) {
+	public ResponseEntity<String> buyStock(@RequestBody Map<String, String> payload, Principal principal) {
+	    // Fetch 'symbol' and 'quantity' from the request body
+	    String symbol = payload.get("symbol");
+	    int quantity = Integer.parseInt(payload.get("quantity"));
+	    
 	    UserDtls user = userRepo.findByEmail(principal.getName());
+	    boolean success = tradingService.buyStock(symbol, quantity, user);
 
-	    tradingService.buyStock(symbol, quantity, user);
-
-	    return "redirect:/user/";  // Redirect back to home
+	    if (success) {
+	        return ResponseEntity.ok("Stock purchased successfully!");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to purchase stock.");
+	    }
 	}
 
 	@GetMapping("/portfolio")
@@ -135,10 +186,10 @@ public class UserController {
 	    List<Portfolio> portfolios = portfolioRepo.findByUser(user);
 
 	    // Log the fetched portfolio data for debugging (optional)
-	    portfolios.forEach(portfolio -> {
-	        System.out.println("Stock: " + portfolio.getStock().getSymbol());
-	        System.out.println("Quantity: " + portfolio.getQuantity());
-	    });
+//	    portfolios.forEach(portfolio -> {
+//	        System.out.println("Stock: " + portfolio.getStock().getSymbol());
+//	        System.out.println("Quantity: " + portfolio.getQuantity());
+//	    });
 
 	    // Add the portfolio data to the model
 	    model.addAttribute("portfolios", portfolios);

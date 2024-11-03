@@ -63,3 +63,27 @@ html, body {
 .blink {
 	background-color: yellow;
 }
+
+body {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1, h3, .navbar-brand {
+    font-family: 'Montserrat', sans-serif;
+    color: #ffdd57;
+}
+
+.card.bg-gradient {
+    background: linear-gradient(135deg, #1c1c1c, #292929);
+    border: 1px solid rgba(255, 221, 87, 0.8);
+}
+
+.card-title, .btn, .navbar-brand {
+    color: #ffdd57 !important;
+}
+
+.btn-info:hover, .btn-success:hover {
+    box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+    transition: all 0.3s ease;
+}

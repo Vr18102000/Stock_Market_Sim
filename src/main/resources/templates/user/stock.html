@@ -1,38 +1,90 @@
 <!DOCTYPE html>
-<html  lang="en" xmlns:th="http://www.thymeleaf.org"  th:replace="~{base::layout(~{::section})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>Real-Time Stock Updates</title>
+
+    <!-- Custom CSS for Stock Page Styling -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+<section class="container py-5">
     <style>
+        /* Real-Time Stock Cards with Shadow and Glow */
         .stock-box {
-            width: 200px;
-            height: 100px;
-            border: 1px solid #ccc;
-            margin: 10px;
+            width: 220px;
+            height: 120px;
+            border: 2px solid #ffdd57; /* Golden border for luxurious look */
+            margin: 15px;
             display: inline-block;
             text-align: center;
-            padding: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #2b2b2b;
+            color: #ffdd57;
+            box-shadow: 0px 0px 15px rgba(255, 221, 87, 0.5);
             position: relative;
-            transition: background-color 0.5s ease; /* For blinking effect */
+            transition: transform 0.3s, box-shadow 0.3s ease;
         }
 
-        .blink {
-            background-color: yellow;
+        /* Animation for Price Change */
+        .price-up {
+            background-color: #4caf50 !important;
+            transition: background-color 0.5s ease;
+        }
+        .price-down {
+            background-color: #f44336 !important;
+            transition: background-color 0.5s ease;
+        }
+
+        /* Floating Search and Filter Bar */
+        #search-filter-container {
+            position: sticky;
+            top: 10px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            z-index: 10;
+        }
+        
+        #stocks-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
         }
     </style>
-</head>
-<body>
 
-<section>
-    <h2>Real-Time Stock Prices</h2>
+    <h2 class="text-center text-light mb-4">Real-Time Stock Prices</h2>
+
+    <!-- Search and Filter Bar -->
+    <div id="search-filter-container">
+        <input type="text" id="search-bar" class="form-control" placeholder="Search by symbol..." oninput="filterStocks()">
+        <select class="form-select" id="sector-filter" onchange="filterStocks()">
+            <option value="">Sector</option>
+            <option value="Technology">Technology</option>
+            <option value="Finance">Finance</option>
+            <option value="Healthcare">Healthcare</option>
+            <!-- Add more sectors as needed -->
+        </select>
+        <select class="form-select" id="price-filter" onchange="filterStocks()">
+            <option value="">Price Range</option>
+            <option value="low">Below $100</option>
+            <option value="medium">$100 - $500</option>
+            <option value="high">Above $500</option>
+        </select>
+    </div>
 
     <!-- Container to display stocks -->
     <div id="stocks-container">
-        <!-- Display cached stock prices initially -->
         <div th:each="entry : ${stockPrices}">
             <div class="stock-box" th:id="${entry.key}">
                 <h3 th:text="${entry.key}">Symbol</h3>
-                <p th:text="'$' + ${entry.value}">Price</p>
+                <p th:text="'₹' + ${#numbers.formatDecimal(entry.value, 2, 2)}">Price</p>
             </div>
         </div>
     </div>
@@ -42,44 +94,63 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <script>
-        var socket = new SockJS('/stock-websocket');  // Connect to the WebSocket endpoint
-        var stompClient = Stomp.over(socket);
+	    // Function to create or update a stock box
+	    function updateStockBox(symbol, price) {
+	        var stockBox = document.getElementById(symbol);
+	        if (!stockBox) {
+	            stockBox = document.createElement('div');
+	            stockBox.id = symbol;
+	            stockBox.classList.add('stock-box');
+	            stockBox.innerHTML = `<h3>${symbol}</h3><p>$${price}</p>`;
+	            document.getElementById('stocks-container').appendChild(stockBox);
+	        } else {
+	            let priceElement = stockBox.querySelector('p');
+	            let oldPrice = parseFloat(priceElement.innerText.replace('$', ''));
+	
+	            // Determine price movement and apply animation class
+	            if (price > oldPrice) {
+	                stockBox.classList.add('price-up');
+	                setTimeout(() => stockBox.classList.remove('price-up'), 500);
+	            } else if (price < oldPrice) {
+	                stockBox.classList.add('price-down');
+	                setTimeout(() => stockBox.classList.remove('price-down'), 500);
+	            }
+	
+	            priceElement.innerText = `$${price}`;
+	        }
+	    }
 
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
+        // Function to filter stocks based on input
+        function filterStocks() {
+            const searchText = document.getElementById("search-bar").value.toLowerCase();
+            const sector = document.getElementById("sector-filter").value;
+            const priceRange = document.getElementById("price-filter").value;
 
-            // Subscribe to the stock prices topic for real-time updates
-            stompClient.subscribe('/topic/stockPrices', function (message) {
-                var stock = JSON.parse(message.body);  // Parse the stock data from WebSocket message
-                updateStockBox(stock.symbol, stock.price);  // Update the stock box
-            });
-        });
+            document.querySelectorAll(".stock-box").forEach(stockBox => {
+                const symbol = stockBox.querySelector("h3").innerText.toLowerCase();
+                const price = parseFloat(stockBox.querySelector("p").innerText.replace('$', ''));
 
-        // Function to create or update a stock box
-        function updateStockBox(symbol, price) {
-            var stockBox = document.getElementById(symbol);
+                let isVisible = true;
 
-            if (!stockBox) {
-                // Create a new stock box if it doesn't exist
-                stockBox = document.createElement('div');
-                stockBox.id = symbol;
-                stockBox.classList.add('stock-box');
-                stockBox.innerHTML = `<h3>${symbol}</h3><p>$${price}</p>`;
-                document.getElementById('stocks-container').appendChild(stockBox);
-            } else {
-                // Update the existing stock box with the new price
-                let priceElement = stockBox.querySelector('p');
-                let oldPrice = parseFloat(priceElement.innerText.replace('$', ''));
-                if (oldPrice !== price) {
-                    // Blink effect when price changes
-                    stockBox.classList.add('blink');
-                    setTimeout(() => stockBox.classList.remove('blink'), 500);
+                // Filter by search text
+                if (searchText && !symbol.includes(searchText)) {
+                    isVisible = false;
                 }
-                priceElement.innerText = `$${price}`;
-            }
+
+                // Filter by sector (placeholder logic - adjust based on actual sector data)
+                if (sector && !symbol.startsWith(sector.toLowerCase().charAt(0))) {
+                    isVisible = false;
+                }
+
+                // Filter by price range
+                if (priceRange === "low" && price >= 100) isVisible = false;
+                if (priceRange === "medium" && (price < 100 || price > 500)) isVisible = false;
+                if (priceRange === "high" && price <= 500) isVisible = false;
+
+                stockBox.style.display = isVisible ? "inline-block" : "none";
+            });
         }
     </script>
 </section>
-
 </body>
 </html>

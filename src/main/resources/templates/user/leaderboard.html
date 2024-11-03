@@ -4,32 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <section>
+    <style>
+    	body {
+		    background: linear-gradient(to right, #141E30, #243B55);
+		    font-family: 'Montserrat', sans-serif;
+		    color: #ffdd57;
+		}
+		
+		h2 {
+		    font-family: 'Montserrat', sans-serif;
+		    font-weight: 700;
+		    color: #ffdd57;
+		}
+		
+		.table {
+		    border-collapse: separate;
+		    border-spacing: 0 10px;
+		}
+		
+		.leaderboard-row {
+		    background-color: rgba(0, 0, 0, 0.6);
+		    border-radius: 10px;
+		    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+		    transition: transform 0.3s ease, box-shadow 0.3s ease;
+		}
+		
+		.leaderboard-row:hover {
+		    transform: scale(1.02);
+		    box-shadow: 0 8px 30px rgba(255, 221, 87, 0.5);
+		}
+		
+		.top1 {
+		    border-left: 5px solid #FFD700;
+		    color: #FFD700;
+		}
+		
+		.top2 {
+		    border-left: 5px solid #C0C0C0;
+		    color: #C0C0C0;
+		}
+		
+		.top3 {
+		    border-left: 5px solid #CD7F32;
+		    color: #CD7F32;
+		}
+		
+		/* Tooltip styling */
+		.user-tooltip {
+		    background-color: rgba(255, 255, 255, 0.95);
+		    border-radius: 8px;
+		    color: #333;
+		    font-size: 0.9rem;
+		    width: 200px;
+		    z-index: 1000;
+		}
+		    	
+    </style>
     <div class="container mt-5">
-        <h2>Leaderboard</h2>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Portfolio Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="user, stat : ${leaderboard}">
-                    <td th:text="${stat.index + 1}"></td>
-                    <td th:text="${user.fullName}"></td>
-                    <td th:text="${user.email}"></td>
-                    <td th:text="${user.portfolioValue}"></td>
-                </tr>
-            </tbody>
-        </table>
-        <a href="/user/" class="btn btn-primary">Back to Dashboard</a>
+        <h2 class="text-center mb-4 text-warning">Top Performers</h2>
+        
+        <!-- Sorting Options -->
+        <div class="d-flex justify-content-end mb-3">
+            <select id="sortOption" class="form-select w-auto" onchange="sortLeaderboard()">
+                <option value="rank">Rank</option>
+                <option value="portfolioValue">Portfolio Value</option>
+            </select>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="table-responsive">
+            <table class="table table-hover text-light" id="leaderboardTable">
+                <thead class="bg-dark text-warning">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Portfolio Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+				    <!-- Top 1 -->
+				    <tr th:each="user, stat : ${leaderboard}" th:if="${stat.index == 0}" class="leaderboard-row top1">
+				        <td th:text="${stat.index + 1}"></td>
+				        <td th:text="${user.fullName}"></td>
+				        <td th:text="${user.email}"></td>
+				        <td th:text="${#numbers.formatDecimal(user.portfolioValue, 1, 2)}"></td>
+				    </tr>
+				
+				    <!-- Top 2 -->
+				    <tr th:each="user, stat : ${leaderboard}" th:if="${stat.index == 1}" class="leaderboard-row top2">
+				        <td th:text="${stat.index + 1}"></td>
+				        <td th:text="${user.fullName}"></td>
+				        <td th:text="${user.email}"></td>
+				        <td th:text="${#numbers.formatDecimal(user.portfolioValue, 1, 2)}"></td>
+				    </tr>
+				
+				    <!-- Top 3 -->
+				    <tr th:each="user, stat : ${leaderboard}" th:if="${stat.index == 2}" class="leaderboard-row top3">
+				        <td th:text="${stat.index + 1}"></td>
+				        <td th:text="${user.fullName}"></td>
+				        <td th:text="${user.email}"></td>
+				        <td th:text="${#numbers.formatDecimal(user.portfolioValue, 1, 2)}"></td>
+				    </tr>
+				
+				    <!-- Other Ranks -->
+				    <tr th:each="user, stat : ${leaderboard}" th:if="${stat.index > 2}" class="leaderboard-row">
+				        <td th:text="${stat.index + 1}"></td>
+				        <td th:text="${user.fullName}"></td>
+				        <td th:text="${user.email}"></td>
+				        <td th:text="${#numbers.formatDecimal(user.portfolioValue, 1, 2)}"></td>
+				    </tr>
+				</tbody>
+            </table>
+        </div>
+        <a href="/user/" class="btn btn-primary mt-4">Back to Dashboard</a>
     </div>
+
+	<!-- Tooltip Card for User Info -->
+	<div id="userTooltip" class="user-tooltip card p-3 shadow" style="display: none; position: absolute;">
+	    <p class="mb-1"><strong>Name:</strong> <span id="tooltipName"></span></p>
+	    <p class="mb-1"><strong>Portfolio:</strong> ₹<span id="tooltipPortfolio"></span></p>
+	    <p><strong>Email:</strong> <span id="tooltipEmail"></span></p>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
+	<script>
+	    document.querySelectorAll('.leaderboard-row').forEach(row => {
+	        row.addEventListener('mouseenter', showTooltip);
+	        row.addEventListener('mouseleave', hideTooltip);
+	    });
+	
+	    function showTooltip(event) {
+	        const row = event.currentTarget;
+	        const tooltip = document.getElementById("userTooltip");
+	
+	        tooltip.style.display = "block";
+	        tooltip.style.top = `${event.pageY + 5}px`;
+	        tooltip.style.left = `${event.pageX + 5}px`;
+	
+	        // Populate tooltip content
+	        tooltip.querySelector("#tooltipName").textContent = row.children[1].textContent;
+	        tooltip.querySelector("#tooltipPortfolio").textContent = row.children[3].textContent;
+	        tooltip.querySelector("#tooltipEmail").textContent = row.children[2].textContent;
+	    }
+	
+	    function hideTooltip() {
+	        document.getElementById("userTooltip").style.display = "none";
+	    }
+	
+	    function sortLeaderboard() {
+	        const option = document.getElementById("sortOption").value;
+	        // TODO: Implement sorting logic here if dynamic data available
+	    }
+	</script>
 </section>
 </body>
 </html>
