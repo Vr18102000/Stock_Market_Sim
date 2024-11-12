@@ -22,7 +22,8 @@ public class StockService {
 
     private static final Logger logger = LoggerFactory.getLogger(StockService.class);
 //    private static final String API_URL = "https://stockmarketsim-api.onrender.com/stock/";
-    private static final String API_URL = "http://localhost:5000/stock/";
+    private static final String API_URL = "https://stockserv-evaggva0anapcrcw.canadacentral-01.azurewebsites.net/stock/";
+//    private static final String API_URL = "http://localhost:5000/stock/";
 
     private Map<String, Double> stockCache = new HashMap<>();
 
