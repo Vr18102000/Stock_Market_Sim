@@ -17,7 +17,7 @@ jobs:
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
-          java-version: '21' 
+          java-version: '21'               # Adjust according to your project
           distribution: 'temurin'
 
       - name: Cache Maven dependencies
@@ -45,26 +45,17 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write  # Required for requesting the JWT
-    env:
-      DB_URL: ${{ secrets.DB_URL }} 
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'stock-market-sim' 
+          app-name: 'stock-market-sim'    # Azure Web App name
           slot-name: 'production'
           package: '*.jar'
+          creds: ${{ secrets.AZURE_PUBLISH_PROFILE }}
