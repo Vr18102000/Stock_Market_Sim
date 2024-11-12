@@ -1,65 +1,30 @@
-name: Build and deploy WAR app to Azure Web App - stock-market-sim
+name: Build and Deploy to Azure
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest
-
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Set up Java version
-        uses: actions/setup-java@v4
+      - name: Set up Java
+        uses: actions/setup-java@v2
         with:
-          java-version: '21'
-          distribution: 'microsoft'
+          distribution: 'temurin'
+          java-version: '21'  # Adjust to your Java version
 
       - name: Build with Maven
-        run: mvn clean install
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-app
-          path: '${{ github.workspace }}/target/*.war'
-
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    environment:
-      name: 'production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: java-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.__clientidsecretname__ }}
-          tenant-id: ${{ secrets.__tenantidsecretname__ }}
-          subscription-id: ${{ secrets.__subscriptionidsecretname__ }}
+        run: mvn clean package
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2
         with:
-          app-name: 'stock-market-sim'
+          app-name: 'stock-market-sim'  # Name of your Azure App Service
           slot-name: 'production'
-          package: '*.war'
-          
-      - name: Set up environment variables for database
-        run: |
-          echo DB_URL=${{ secrets.DB_URL }} >> $GITHUB_ENV
-          echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> $GITHUB_ENV
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> $GITHUB_ENV
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: target/*.jar
