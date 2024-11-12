@@ -56,15 +56,11 @@ jobs:
         with:
           name: java-app
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_PUBLISH_PROFILE }} # Use publish profile JSON here
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'stock-market-sim'    # Azure Web App name
           slot-name: 'production'
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: '*.jar'
