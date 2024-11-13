@@ -32,13 +32,13 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: List files in target directory
-        run: ls -la target
+        run: ls -la target || echo "No files found in target"
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: target/*.jar   # Package the JAR instead of WAR
+          path: target/*.jar   # Match any JAR in target
 
   deploy:
     runs-on: ubuntu-latest
