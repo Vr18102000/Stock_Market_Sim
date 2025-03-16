@@ -51,7 +51,7 @@ Stock Market Simulator
 │── pom.xml                   # Project Dependencies
 │── Dockerfile                # Docker Setup
 │── .github/workflows/        # GitHub Actions for Deployment
-
+```
 ---
 
 ## 🔥 Future Improvements
