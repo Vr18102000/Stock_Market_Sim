@@ -37,3 +37,32 @@ This project demonstrates expertise in **Spring Boot, PostgreSQL, WebSockets, RE
 ---
 
 ## 🏗️ Project Architecture  
+Stock Market Simulator
+│── src/
+│   ├── main/java/com/sim/
+│   │   ├── config/           # Security & App Configurations
+│   │   ├── controller/       # API Endpoints (User, Stocks, Trading)
+│   │   ├── model/            # Data Models (User, Portfolio, Transactions)
+│   │   ├── repository/       # JPA Repositories
+│   │   ├── service/          # Business Logic
+│   ├── resources/templates/  # HTML Views
+│   ├── resources/static/     # CSS & JS Files
+│── pom.xml                   # Project Dependencies
+│── Dockerfile                # Docker Setup
+│── .github/workflows/        # GitHub Actions for Deployment
+
+---
+
+## 🔥 Future Improvements
+🚀 More advanced stock analysis tools
+🚀 Multiplayer Trading Mode
+🚀 AI-powered trading assistant
+
+---
+
+## 💬 Contact & Contributions
+Contributions are welcome! Feel free to fork the repo, create pull requests, or open issues.
+
+---
+
+**💼 Developed by: Vishal Rakhecha**
