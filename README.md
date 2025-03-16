@@ -37,18 +37,18 @@ This project demonstrates expertise in **Spring Boot, PostgreSQL, WebSockets, RE
 ---
 
 ## 🏗️ Project Architecture  
-Stock Market Simulator
-│── src/
-│   ├── main/java/com/sim/
-│   │   ├── config/           # Security & App Configurations
-│   │   ├── controller/       # API Endpoints (User, Stocks, Trading)
-│   │   ├── model/            # Data Models (User, Portfolio, Transactions)
-│   │   ├── repository/       # JPA Repositories
-│   │   ├── service/          # Business Logic
-│   ├── resources/templates/  # HTML Views
-│   ├── resources/static/     # CSS & JS Files
-│── pom.xml                   # Project Dependencies
-│── Dockerfile                # Docker Setup
+Stock Market Simulator <br>
+│── src/ <br>
+│   ├── main/java/com/sim/ <br>
+│   │   ├── config/           # Security & App Configurations <br>
+│   │   ├── controller/       # API Endpoints (User, Stocks, Trading) <br>
+│   │   ├── model/            # Data Models (User, Portfolio, Transactions) <br>
+│   │   ├── repository/       # JPA Repositories <br>
+│   │   ├── service/          # Business Logic <br>
+│   ├── resources/templates/  # HTML Views <br>
+│   ├── resources/static/     # CSS & JS Files <br>
+│── pom.xml                   # Project Dependencies <br>
+│── Dockerfile                # Docker Setup <br>
 │── .github/workflows/        # GitHub Actions for Deployment
 
 ---
