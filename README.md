@@ -54,9 +54,9 @@ Stock Market Simulator <br>
 ---
 
 ## 🔥 Future Improvements
-🚀 More advanced stock analysis tools
-🚀 Multiplayer Trading Mode
-🚀 AI-powered trading assistant
+🚀 More advanced stock analysis tools <br>
+🚀 Multiplayer Trading Mode <br>
+🚀 AI-powered trading assistant <br>
 
 ---
 
